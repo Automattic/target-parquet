@@ -195,5 +195,4 @@ def test_flatten_array_fields():
         "object_array": "array",
     }
     output = flatten(in_dict, flat_schema)
-    print(output)
     assert output == expected
