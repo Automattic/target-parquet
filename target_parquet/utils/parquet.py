@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import os
 
 import pyarrow as pa
 import pyarrow.parquet as pq
@@ -119,6 +120,7 @@ def write_parquet_file(
         if basename_template
         else None,
     )
+    logger.info('listdir: %s', os.listdir(path))
     assert pq.read_table(path).num_rows == table.num_rows
 
 
