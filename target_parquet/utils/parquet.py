@@ -118,6 +118,7 @@ def write_parquet_file(
         if basename_template
         else None,
     )
+    assert pq.read_table(path).num_rows == table.num_rows
 
 
 def get_pyarrow_table_size(table: pa.Table) -> float:
