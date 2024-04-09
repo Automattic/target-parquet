@@ -120,8 +120,9 @@ def write_parquet_file(
         if basename_template
         else None,
     )
-    output_num_rows = table.num_rows
+    output_num_rows = pq.read_table(path).num_rows
     logger.info('Wrote %s rows to "%s"', output_num_rows, path)
+    logger.info('listdir: %s', os.listdir(path))
     assert output_num_rows == table.num_rows
 
 
