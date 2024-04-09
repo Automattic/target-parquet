@@ -109,7 +109,6 @@ def write_parquet_file(
 ) -> None:
     """Write a pyarrow table to a parquet file."""
     logger.info('Writing local parquet file to "%s"', path)
-    logger.info('listdir before: %s', os.listdir(path))
     pq.write_to_dataset(
         table,
         root_path=path,
@@ -121,7 +120,6 @@ def write_parquet_file(
         if basename_template
         else None,
     )
-    logger.info('listdir after: %s', os.listdir(path))
     assert pq.read_table(path).num_rows == table.num_rows
 
 
