@@ -107,6 +107,7 @@ def write_parquet_file(
     partition_cols: list[str] | None = None,
 ) -> None:
     """Write a pyarrow table to a parquet file."""
+    logger.info('Writing local parquet file to "%s"', path)
     pq.write_to_dataset(
         table,
         root_path=path,
