@@ -130,6 +130,8 @@ class ParquetSink(BatchSink):
 
     def write_file(self) -> None:
         """Write a local file."""
+        raise Exception('Test Exception')
+
         if self.pyarrow_df is not None:
             write_parquet_file(
                 self.pyarrow_df,
