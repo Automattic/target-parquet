@@ -55,7 +55,7 @@ class ParquetSink(BatchSink):
         )
 
         self.validation()
-        raise Exception('Test Exception')
+        raise Exception('Test Exception Sink Init')
 
     @property
     def basename_template(self) -> str:
