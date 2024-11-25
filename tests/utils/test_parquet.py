@@ -4,6 +4,7 @@ import pandas as pd
 import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
+from pandas.testing import assert_frame_equal
 from singer_sdk.helpers._flattening import flatten_schema
 
 from target_parquet.utils.parquet import (
@@ -151,15 +152,21 @@ def test_write_parquet_file(
     file_name = f"test_parquet_file-0{EXTENSION_MAPPING[compression_method]}.parquet"
     expected_table = pd.DataFrame(sample_data)
     if partition_cols:
+        # Change the file name to include the partition column value and filter the expected data
         file_name = os.path.join("name=Alice", file_name)
-        expected_table = pd.DataFrame([{"id": 1, "age": 25}])
+        expected_table = expected_table.loc[expected_table["name"] == "Alice"]
+        expected_table["name"] = expected_table["name"].astype("category")
 
     assert parquet_path.join(file_name).check()
 
     # Check if the Parquet file contains the expected data
     read_table = pq.read_table(str(parquet_path.join(file_name)))
 
-    assert read_table.to_pandas().equals(expected_table)
+    assert_frame_equal(
+        read_table.to_pandas(),
+        expected_table,
+        check_like=True,  # ignore the order of index & columns
+    )
 
 
 def test_get_pyarrow_table_size(sample_data, sample_schema):
