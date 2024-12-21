@@ -113,7 +113,6 @@ def write_parquet_file(
         compression=compression_method,
         partition_cols=partition_cols or None,
         use_threads=True,
-        use_legacy_dataset=False,
         basename_template=f"{basename_template}{EXTENSION_MAPPING[compression_method.lower()]}.parquet"
         if basename_template
         else None,
