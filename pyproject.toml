@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "target-parquet"
-version = "1.1.0"
+version = "1.1.1"
 description = "`target-parquet` is a Singer target for parquet, built with the Meltano Singer SDK."
 readme = "README.md"
 authors = ["Joao Amaral <joao.amaral@automattic.com>"]

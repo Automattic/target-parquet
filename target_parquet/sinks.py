@@ -134,7 +134,7 @@ class ParquetSink(BatchSink):
             write_parquet_file(
                 self.pyarrow_df,
                 self.destination_path,
-                compression_method=self.config.get("compression", "gzip"),
+                compression_method=self.config.get("compression_method", "gzip"),
                 basename_template=self.basename_template,
                 partition_cols=self.partition_cols,
             )

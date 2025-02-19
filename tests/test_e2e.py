@@ -481,3 +481,42 @@ def test_e2e_partition_cols_validation(
             input=StringIO(example1_schema_messages["messages"]),
             finalize=True,
         )
+def test_e2e_create_file_compression_method_default(
+        monkeypatch, test_output_dir, sample_config, example1_schema_messages
+):
+    """Test that the target creates a file with the expected records"""
+    monkeypatch.setattr("time.time", lambda: 1700000000)
+
+    target_sync_test(
+        TargetParquet(config=sample_config),
+        input=StringIO(example1_schema_messages["messages"]),
+        finalize=True,
+    )
+
+    assert (
+            len(os.listdir(test_output_dir / example1_schema_messages["stream_name"])) == 1
+    )
+
+    files = os.listdir(test_output_dir / example1_schema_messages["stream_name"])
+    assert files[0].endswith('.gz.parquet')
+
+
+def test_e2e_create_file_compression_method_snappy(
+        monkeypatch, test_output_dir, sample_config, example1_schema_messages
+):
+    """Test that the target creates a file with the expected records"""
+    monkeypatch.setattr("time.time", lambda: 1700000000)
+
+    target_sync_test(
+        TargetParquet(
+            config=sample_config | {"compression_method": "snappy"}),
+        input=StringIO(example1_schema_messages["messages"]),
+        finalize=True,
+    )
+
+    assert (
+            len(os.listdir(test_output_dir / example1_schema_messages["stream_name"])) == 1
+    )
+
+    files = os.listdir(test_output_dir / example1_schema_messages["stream_name"])
+    assert files[0].endswith('.snappy.parquet')
