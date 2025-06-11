@@ -14,8 +14,9 @@ from target_parquet.utils.parquet import (
     flatten_schema_to_pyarrow_schema,
     get_pyarrow_table_size,
     write_parquet_file,
+    _convert_decimal
 )
-
+from decimal import Decimal
 
 @pytest.fixture()
 def sample_data():
@@ -208,3 +209,33 @@ def test_get_pyarrow_table_size(sample_data, sample_schema):
     # Check if the result is a non-negative float
     assert isinstance(size_in_mb, float)
     assert pytest.approx(size_in_mb, 0.1) == 7.15
+
+
+def test_convert_decimal_with_decimal():
+    value = Decimal("10.5")
+    result = _convert_decimal(value)
+    assert isinstance(result, float)
+    assert result == 10.5
+
+def test_convert_decimal_with_non_decimal():
+    value = "test"
+    result = _convert_decimal(value)
+    assert result == "test"
+
+def test_create_pyarrow_table_with_decimal_conversion():
+    schema = pa.schema([
+        pa.field("id", pa.int64()),
+        pa.field("price", pa.float64())
+    ])
+
+    data = [
+        {"id": 1, "price": Decimal("9.99")},
+        {"id": 2, "price": Decimal("19.99")}
+    ]
+
+    table = create_pyarrow_table(data, schema)
+
+    assert table.schema == schema
+    assert table.num_rows == 2
+    assert table.column("price").to_pylist() == [9.99, 19.99]
+    assert table.column("id").to_pylist() == [1, 2]

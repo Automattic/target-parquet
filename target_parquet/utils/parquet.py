@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from decimal import Decimal
 
 import pyarrow as pa
 import pyarrow.parquet as pq
@@ -83,9 +84,16 @@ def flatten_schema_to_pyarrow_schema(flatten_schema_dictionary: dict) -> pa.Sche
     )
 
 
+def _convert_decimal(value):
+    """Convert Decimal"""
+    if isinstance(value, Decimal):
+        return float(value)
+    return value
+
+
 def create_pyarrow_table(list_dict: list[dict], schema: pa.Schema) -> pa.Table:
     """Create a pyarrow Table from a python list of dict."""
-    data = {f: [row.get(f) for row in list_dict] for f in schema.names}
+    data = {f: [_convert_decimal(row.get(f)) for row in list_dict] for f in schema.names}
     return pa.table(data).cast(schema)
 
 
